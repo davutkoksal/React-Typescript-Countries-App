@@ -12,30 +12,28 @@ export interface ModalObj {
   languages: Language[];
   continentName: string;
 }
-interface Country {
+export interface Country {
   name: string;
   code: string;
   capital: string;
   emojiU: string;
   languages: Language[];
 }
-interface Continent {
+export interface Continent {
   code: string;
   name: string;
   countries: Country[];
 }
-interface Language {
+export interface Language {
   code: string;
   name: string;
 }
 
-// initialize a GraphQL client
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   uri: "https://countries.trevorblades.com",
 });
 
-// write a GraphQL query that asks for names and codes for all countries
 const LIST_CONTINENTS = gql`
   {
     continents {
@@ -75,7 +73,6 @@ function CountrySelect() {
       element.countries.forEach((item) => {
         item.languages.forEach((lang) => {
           if (lang.name === record.languages[0].name) {
-            console.log(item);
             list.push({ ...item, continentName: element.name });
           }
         });
