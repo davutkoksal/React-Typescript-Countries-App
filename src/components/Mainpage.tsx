@@ -1,5 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from "react";
 import { ApolloClient, InMemoryCache, gql, useQuery } from "@apollo/client";
 import { Button, Table, Select } from "antd";
 import CountryDetailModal from "./CountryDetailModal";
@@ -29,10 +28,7 @@ interface Language {
   code: string;
   name: string;
 }
-interface IProps {
-  modalList: ModalObj[];
-  setModalList: (arr: ModalObj[]) => void;
-}
+
 // initialize a GraphQL client
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -63,16 +59,7 @@ const LIST_CONTINENTS = gql`
     }
   }
 `;
-const LIST_COUNTRIES = gql`
-  {
-    countries {
-      name
-      code
-    }
-  }
-`;
 
-// create a component that renders a select input for coutries
 function CountrySelect() {
   const [continent, setContinent] = useState("US");
   const [countries, setCountries] = useState([]);
@@ -80,12 +67,10 @@ function CountrySelect() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { data, loading, error } = useQuery(LIST_CONTINENTS, { client });
-  //   const { data1, loading1, error1 } = useQuery(LIST_COUNTRIES, { client });
   let list = [] as any;
 
   const handleModalOpen = (record: any) => {
     setIsModalVisible(true);
-    console.log(record.languages[0].name);
     data.continents.forEach((element: Continent) => {
       element.countries.forEach((item) => {
         item.languages.forEach((lang) => {
@@ -98,7 +83,6 @@ function CountrySelect() {
     });
     setModalList(list);
   };
-  console.log(data?.continents);
   const columns = [
     {
       title: "Ülke Adı",
@@ -134,18 +118,17 @@ function CountrySelect() {
       <Select
         defaultValue=" Lütfen Bir Kıta Seçiniz"
         style={{ width: 200 }}
-        // value={continent}
         onChange={(value) => {
           setContinent(value);
-          const selectedContinent = data.continents?.filter(
+          const selectedContinent = data.continents?.find(
             (cont: Continent) => cont.code === value
           );
-          setCountries(selectedContinent[0].countries);
+          setCountries(selectedContinent.countries);
         }}
       >
-        {data.continents.map((country: Country) => (
-          <option key={country.code} value={country.code}>
-            {country.name}
+        {data.continents.map((continent: Continent) => (
+          <option key={continent.code} value={continent.code}>
+            {continent.name}
           </option>
         ))}
       </Select>
