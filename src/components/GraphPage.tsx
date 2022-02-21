@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { ApolloClient, InMemoryCache, gql, useQuery } from "@apollo/client";
@@ -22,7 +22,7 @@ interface Continent {
   countries: Country[];
 }
 interface FetchedData {
-continents:Continent[]
+  continents: Continent[];
 }
 const client = new ApolloClient({
   cache: new InMemoryCache(),
@@ -55,17 +55,16 @@ const LIST_CONTINENTS = gql`
 
 const SecondPage = () => {
   // const { data, loading, error } = useQuery(LIST_CONTINENTS, { client });
-  const [data,setData]=useState<FetchedData>()
+  const [data, setData] = useState<FetchedData>();
 
-  const fetchData=async()=>{
-// const response=await axios.post("https://countries.trevorblades.com")
-axios({
-  url: "https://countries.trevorblades.com",
-  method: 'post',
-  data: {
-    query: `
-      query PostsForAuthor {
-            
+  const fetchData = async () => {
+    // const response=await axios.post("https://countries.trevorblades.com")
+    axios({
+      url: "https://countries.trevorblades.com",
+      method: "post",
+      data: {
+        query: `
+      query PostForContinents {
             continents {
               name
               code
@@ -87,15 +86,15 @@ axios({
             }
           
         }
-      `
-  }
-}).then((result) => {
-  console.log(result)
-setData(result.data.data)
-});
-  }
-  useEffect(()=>{fetchData()
-  },[])
+      `,
+      },
+    }).then((result) => {
+      setData(result.data.data);
+    });
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   const chartData = {
     data: {
       labels: data?.continents.map((country: Continent) => country.name),
