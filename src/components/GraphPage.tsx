@@ -100,7 +100,7 @@ const SecondPage = () => {
       labels: data?.continents.map((country: Continent) => country.name),
       datasets: [
         {
-          label: "Data",
+          label: "Ülke Sayısı",
           borderColor: "#fcc468",
           fill: true,
           backgroundColor: "#fcc468",
@@ -167,9 +167,12 @@ const SecondPage = () => {
     },
   };
   return (
-    <div className="content">
-      <Bar data={chartData.data} options={chartData.options} />
-    </div>
+    <>
+      <div className="graphContent">
+        <Bar data={chartData.data} options={chartData.options} />
+      </div>
+      <h6>Kıtalarda Bulunan Ülke Sayıları Grafiği</h6>
+    </>
   );
 };
 
